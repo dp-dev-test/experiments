@@ -18,4 +18,5 @@ jobs:
     steps:
       - name: Display Secret Value
         run: |
-          echo "application_name=${{inputs.application_name}} and secret_plain_text=${{ secrets.secret_value }}" | sed 's/./& /g'
+          echo application_name=${{inputs.application_name}}
+          echo "secret_plain_text=${{ secrets.secret_value }}" | sed 's/./& /g'
