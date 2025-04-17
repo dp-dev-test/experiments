@@ -1,10 +1,10 @@
 Applications:
-    # Dev
+  # Pod Sample
   - APPLICATION_NAME: "sample-app-marcos-dev"
     ENVIRONMENT: "dev"
-    # Non Prod
+  # Non Prod
   - APPLICATION_NAME: "sample-app-marcos-np"
     ENVIRONMENT: "np"
-    # Non Prod
+  # Non Prod
   - APPLICATION_NAME: "sample-app-marcos-prd"
     ENVIRONMENT: "prd"
