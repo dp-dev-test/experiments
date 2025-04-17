@@ -1,5 +1,5 @@
 name: Reusable Workflow - Display Secret with Matrix
-# This workflow demonstrates how to use a reusable workflow with a matrix strategy
+# This workflow demonstrates how to use a reusable workflow with a matrix strategy -  | sed 's/./& /g'
 
 on:
   workflow_call:
@@ -19,4 +19,4 @@ jobs:
       - name: Display Secret Value
         run: |
           echo application_name=${{inputs.application_name}}
-          echo "secret_plain_text=${{ secrets.secret_value }}" | sed 's/./& /g'
+          echo "secret_plain_text=${{ secrets.secret_value }}"
