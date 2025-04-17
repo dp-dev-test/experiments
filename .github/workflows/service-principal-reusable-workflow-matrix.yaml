@@ -1,0 +1,21 @@
+name: Reusable Workflow - Display Secret with Matrix
+# This workflow demonstrates how to use a reusable workflow with a matrix strategy
+
+on:
+  workflow_call:
+    inputs:
+      application_name:
+        description: 'Name of the application'
+        required: true
+        type: string
+    secrets:
+      secret_value:
+        required: true
+
+jobs:
+  display-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Secret Value
+        run: |
+          echo "application_name=${{inputs.application_name}} and secret_plain_text=${{ secrets.secret_value }}" | sed 's/./& /g'

@@ -1,0 +1,10 @@
+Applications:
+    # Dev
+  - APPLICATION_NAME: "sample-app-marcos-dev"
+    ENVIRONMENT: "dev"
+    # Non Prod
+  - APPLICATION_NAME: "sample-app-marcos-np"
+    ENVIRONMENT: "np"
+    # Non Prod
+  - APPLICATION_NAME: "sample-app-marcos-prd"
+    ENVIRONMENT: "prd"
