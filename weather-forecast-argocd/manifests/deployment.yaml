@@ -17,7 +17,7 @@ spec:
       - name: weather-forecast
         image: sampledotnetregistery.azurecr.io/webapiserver:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: NODE_ENV
           value: "dev"

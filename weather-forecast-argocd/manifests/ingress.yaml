@@ -14,7 +14,7 @@ spec:
     - host: devapp.cchaxcess.com
       http:
         paths:
-        - path: /weatherforecast
+        - path: /
           backend:
             service:
               name:  weather-forecast-service
