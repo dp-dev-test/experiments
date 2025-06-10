@@ -21,21 +21,21 @@ spec:
           env:
             - name: NODE_ENV
               value: "dev"
-          startupProbe:
-            httpGet:
-              path: /weatherforecast
-              port: 80
-            failureThreshold: 10
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /weatherforecast
-              port: 80
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /weatherforecast
-              port: 80
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
+          # startupProbe:
+          #   httpGet:
+          #     path: /weatherforecast
+          #     port: 80
+          #   failureThreshold: 10
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /weatherforecast
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /weatherforecast
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 10
