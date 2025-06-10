@@ -7,7 +7,7 @@ metadata:
     appgw.ingress.kubernetes.io/appgw-ssl-certificate: CCHAxcess
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/backend-path-prefix: "/"
-    appgw.ingress.kubernetes.io/health-probe-path: /httprequest
+    appgw.ingress.kubernetes.io/health-probe-path: /weatherforecast
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
@@ -20,4 +20,4 @@ spec:
               name:  weather-forecast-service
               port:
                 number: 80
-          pathType: Exact 
+          pathType: Exact
