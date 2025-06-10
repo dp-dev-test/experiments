@@ -4,16 +4,20 @@ metadata:
   name: weather-forecast-ingress
   namespace: weather-forecast-dev
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: CCHAxcess
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
+    appgw.ingress.kubernetes.io/health-probe-path: /httprequest
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: weather-forecast.example.com
+    - host: devapp.cchaxcess.com
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: weather-forecast-service
-                port:
-                  number: 80
+        - path: /weatherforecast
+          backend:
+            service:
+              name:  weather-forecast-service
+              port:
+                number: 80
+          pathType: Exact 
