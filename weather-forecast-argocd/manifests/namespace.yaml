@@ -1,0 +1,9 @@
+# create a namespace for the weather-forecast application
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: weather-forecast-dev
+  labels:
+    app: weather-forecast
+    environment: dev # Label to identify the environment
+    managed-by: argocd # Label to indicate ArgoCD management
