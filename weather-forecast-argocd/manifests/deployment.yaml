@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-forecast
+  namespace: weather-forecast-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weather-forecast
+  template:
+    metadata:
+      labels:
+        app: weather-forecast
+    spec:
+      containers:
+      - name: weather-forecast
+        image: sampledotnetregistery.azurecr.io/webapiserver:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: "dev"

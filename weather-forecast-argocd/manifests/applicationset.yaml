@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: weather-forecast-set
+  namespace: weather-forecast-dev
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            namespace: weather-forecast-dev
+  template:
+    metadata:
+      name: 'weather-forecast-{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/dp-dev-test/experiments.git'
+        targetRevision: HEAD
+        path: manifests
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
