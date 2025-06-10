@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: weather-forecast-set
-  namespace: weather-forecast-dev
+  namespace: argocd
 spec:
   generators:
     - list:
@@ -17,9 +17,9 @@ spec:
       source:
         repoURL: 'https://github.com/dp-dev-test/experiments.git'
         targetRevision: HEAD
-        path: manifests
+        path: weather-forecast-argocd/manifests
       destination:
-        server: 'https://kubernetes.default.svc'
+        server: 'https://docker-aks-aksclusterrg-64e0f8-uqqq0ypl.hcp.eastus.azmk8s.io:443'
         namespace: '{{namespace}}'
       syncPolicy:
         automated:
