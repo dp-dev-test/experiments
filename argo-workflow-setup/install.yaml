@@ -3045,6 +3045,17 @@ kind: ConfigMap
 metadata:
   name: workflow-controller-configmap
   namespace: argo
+data:
+  workflowDefaults: |
+    spec:
+      # must complete in 1h (3600 seconds)
+      activeDeadlineSeconds: 3600
+      # keep workflows for 1d (86,400 seconds)
+      ttlStrategy:
+        secondsAfterCompletion: 86400
+      # delete all pods as soon as they complete
+      podGC:
+        strategy: OnPodCompletion
 ---
 apiVersion: v1
 kind: Service
