@@ -49,7 +49,7 @@ kubectl apply -f .\argo-events\Sensor.yaml
 
 ```sh
 kubectl get sensor -n argo-events
-kubectl describe eventsource github-push -n argo-events
+kubectl describe sensor github-push-sensor -n argo-events
 ```
 
 ## Usage
