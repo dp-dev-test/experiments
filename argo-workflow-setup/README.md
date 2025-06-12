@@ -16,11 +16,19 @@ kubectl create namespace argo
 
 ## 2. Install Argo Workflows Using Kubectl
 
+### Configuration
+
 For local installation add following line to install.yaml
 
 ```sh
         - --auth-mode=server
 ```
+
+- **TTL Settings**:  
+  Workflows can be configured to auto-delete after completion using `ttlSecondsAfterFinished` in the workflow spec or via the `workflow-controller-configmap`.
+
+- **Pod Garbage Collection**:  
+  Configure pod cleanup using the `podGC.strategy` field in the controller configmap.
 
 ```sh
 kubectl apply -n argo -f .\argo-workflow-setup\install.yaml
@@ -63,6 +71,9 @@ argo submit .\argo-workflows\helloworld-workflow.yaml --watch
 argo submit https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml --watch
 ```
 
+## References
+
+- [Argo Workflows Documentation](https://argoproj.github.io/argo-workflows/)
 ---
 
 **Note:**  

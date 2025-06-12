@@ -94,10 +94,17 @@ Move-Item .\argocd.exe C:\Windows\System32\
 ```
 
 ## Login to argo cd from CLI
+
+```powershell
 argocd login localhost:8088 --username admin --password {yourpassword}
+```
 
 ## Add Your GitHub Repository to Argo CD
+
+```powershell
 argocd repo add https://github.com/dp-dev-test/experiments.git --username gitusername --password yourpattoken
+```
+---
 
 **Note:**  
 - For production, consider securing the UI and configuring authentication.

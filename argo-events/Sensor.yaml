@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: github-push-sensor
+  namespace: argo-events
+spec:
+  dependencies:
+    - name: github-push-dep
+      eventSourceName: github-push
+      eventName: repo-push
+      filters:
+        cel:
+          filter: |
+            exists(event.payload.head_commit.added,
+                   f, f.endsWith(".config") || f.endsWith(".tfvars")) ||
+            exists(event.payload.head_commit.modified,
+                   f, f.endsWith(".config") || f.endsWith(".tfvars"))
+  triggers:
+    - template:
+        name: argo-workflow-trigger
+        argoWorkflow:
+          group: argoproj.io
+          version: v1alpha1
+          resource: workflows
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: non-manifest-workflow-
+              spec:
+                entrypoint: main
+                templates:
+                  - name: main
+                    container:
+                      image: alpine:3.18
+                      command: [echo]
+                      args: ["Non-manifest file changes was triggered!!!"]

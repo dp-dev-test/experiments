@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: github-push
+  namespace: argo-events
+spec:
+  github:
+    repo-push:
+      repositories:
+        - owner: dp-dev-test
+          repo:  experiments
+      events:
+        - push
+      apiToken:
+        name: github-access
+        key:  token
+      webhook:
+        endpoint: /push
+        port:     12000
