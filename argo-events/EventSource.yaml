@@ -8,12 +8,19 @@ spec:
     repo-push:
       repositories:
         - owner: dp-dev-test
-          repo:  experiments
+          repo: experiments
       events:
         - push
       apiToken:
         name: github-access
-        key:  token
+        key: token
       webhook:
         endpoint: /push
-        port:     12000
+        port: "12000"
+      filters:
+        cel:
+          filter: |
+            exists(event.payload.head_commit.added,
+                   f, f.endsWith(".config") || f.endsWith(".tfvars")) ||
+            exists(event.payload.head_commit.modified,
+                   f, f.endsWith(".config") || f.endsWith(".tfvars"))
