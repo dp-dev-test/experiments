@@ -4,6 +4,7 @@ metadata:
   name: github-push
   namespace: argo-events
 spec:
+  eventBusName: default
   github:
     repo-push:
       repositories:
