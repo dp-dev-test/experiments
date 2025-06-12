@@ -47,18 +47,22 @@ To access the Argo Workflows UI locally, run:
 kubectl -n argo port-forward deployment/argo-server 2746:2746
 ```
 
-Then open [http://localhost:2746](http://localhost:2746) in your browser.
+Then open [https://localhost:2746](https://localhost:2746/workflows/?&limit=50) in your browser.
 
 ## 6. (Optional) Submit sample workflow
 
-```sh
-kubectl -n argo port-forward deployment/argo-server 2746:2746
-```
 ### Submit sample workflow from local yaml
+
+```sh
 argo submit .\argo-workflows\helloworld-workflow.yaml --watch
+```
 
 ### Submit sample workflow from remote yaml
+
+```sh
 argo submit https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml --watch
+```
+
 ---
 
 **Note:**  

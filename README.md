@@ -77,6 +77,9 @@ kubectl port-forward svc/argocd-server -n argocd 8088:443
 ```sh
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
+---
+
+**You can now access the Argo CD UI using the LoadBalancer's external IP or via [https://localhost:8088](https://localhost:8088) if using port-forwarding.**
 
 ## 5. Download the Latest Argo CD CLI for Windows
 
@@ -89,10 +92,6 @@ Invoke-WebRequest -Uri https://github.com/argoproj/argo-cd/releases/latest/downl
 ```powershell
 Move-Item .\argocd.exe C:\Windows\System32\
 ```
-
----
-
-**You can now access the Argo CD UI using the LoadBalancer's external IP or via [https://localhost:8088](https://localhost:8088) if using port-forwarding.**
 
 ## Login to argo cd from CLI
 argocd login localhost:8088 --username admin --password {yourpassword}
