@@ -18,6 +18,9 @@ spec:
       webhook:
         endpoint: /push
         port: "12000"
+      insecure: true
+      active: true
+      contentType: json
       filters:
         cel:
           filter: |
