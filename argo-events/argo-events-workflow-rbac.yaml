@@ -1,0 +1,50 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-workflow-creator
+  namespace: argo-events
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows"]
+    verbs: ["create", "get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-workflow-creator-binding
+  namespace: argo-events
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: argo-events
+roleRef:
+  kind: Role
+  name: argo-workflow-creator
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-workflowtaskresults-creator
+  namespace: argo-events
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflowtaskresults"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-workflowtaskresults-creator-binding
+  namespace: argo-events
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: argo-events
+roleRef:
+  kind: Role
+  name: argo-workflowtaskresults-creator
+  apiGroup: rbac.authorization.k8s.io

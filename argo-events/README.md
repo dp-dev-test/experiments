@@ -52,9 +52,23 @@ kubectl get sensor -n argo-events
 kubectl describe sensor github-push-sensor -n argo-events
 ```
 
+#### Grant RBAC Permissions to Service Accounts
+
+Create a Role and RoleBinding to allow the service account to create workflows & workflowtaskresults.
+
+```sh
+kubectl apply -f .\argo-events\argo-events-workflow-rbac.yaml
+```
+
+#### Manage Webhooks & See recent delivered messages
+
+```sh
+https://github.com/dp-dev-test/experiments/settings/hooks/552050420?tab=deliveries
+```
+
 ## Usage
 
-### Example: Trigger Workflow on `.tfvars` File Upload
+### Example: Trigger Workflow on `.config` File Update
 
 1. Deploy the EventSource and Sensor YAMLs.
 2. Update sample `.tfvars` or `.config`  file.
