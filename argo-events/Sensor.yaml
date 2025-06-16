@@ -51,23 +51,62 @@ spec:
           end
   triggers:
     - template:
-        name: argo-workflow-trigger
-        argoWorkflow:
+        name: deploy-app-workflow
+        k8s:
           group: argoproj.io
           version: v1alpha1
           resource: workflows
-          operation: submit
+          operation: create
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: non-manifest-workflow-
+                generateName: deployment-
               spec:
-                entrypoint: main
+                entrypoint: deploy-config-changes
+                arguments:
+                  parameters:
+                    - name: repository
+                      value: ""
+                    - name: commit-id
+                      value: ""
                 templates:
-                  - name: main
+                  - name: deploy-config-changes
+                    steps:
+                      - - name: validate-config
+                          template: validate-repo-step
+                      - - name: deploy-changes
+                          template: deploy-step
+                  - name: validate-repo-step
                     container:
-                      image: alpine:3.18
-                      command: [echo]
-                      args: ["Non-manifest file changes was triggered!!!"]
+                      image: alpine:latest
+                      command: [sh, -c]
+                      args:
+                        [
+                          "echo 'Validating repository: {{workflow.parameters.repository}}'",
+                        ]
+                  - name: deploy-step
+                    container:
+                      image: alpine:latest
+                      command: [sh, -c]
+                      args:
+                        [
+                          "echo 'Deploying changes for commit: {{workflow.parameters.commit-id}}'",
+                        ]
+        parameters:
+          - src:
+              dependencyName: github-push-dep
+              dataKey: body.repository.full_name
+            dest: spec.arguments.parameters.0.value
+          - src:
+              dependencyName: github-push-dep
+              dataKey: body.head_commit.id
+            dest: spec.arguments.parameters.1.value
+      conditions: "github-push-dep"
+      retryStrategy:
+        limit: 3
+        backoff:
+          duration: 5s
+          factor: 2
+          maxDuration: 30s

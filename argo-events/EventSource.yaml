@@ -21,3 +21,17 @@ spec:
       insecure: true
       active: true
       contentType: json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: github-push-eventsource-svc
+  namespace: argo-events
+spec:
+  type: LoadBalancer
+  selector:
+    eventsource-name: github-push
+  ports:
+    - protocol: TCP
+      port: 12000
+      targetPort: 12000
