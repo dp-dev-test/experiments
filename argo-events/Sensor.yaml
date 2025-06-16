@@ -46,7 +46,7 @@ spec:
                       end
                   end
               end
-            print("No commits found in the payload")
+            print("No config files changes found in the payload")
             return false
           end
   triggers:
