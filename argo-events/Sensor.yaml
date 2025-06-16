@@ -9,12 +9,46 @@ spec:
       eventSourceName: github-push
       eventName: repo-push
       filters:
-        cel:
-          filter: |
-            exists(event.payload.head_commit.added,
-                   f, f.endsWith(".config") || f.endsWith(".tfvars")) ||
-            exists(event.payload.head_commit.modified,
-                   f, f.endsWith(".config") || f.endsWith(".tfvars"))
+        script: |
+          -- Access the event body (the GitHub webhook payload)
+          local payload = event.body
+
+          -- Check if 'commits' array exists and iterate
+          if payload and payload.commits then
+              for _, commit in ipairs(payload.commits) do
+                  -- Check added files
+                  if commit.added then
+                      for _, filepath in ipairs(commit.added) do
+                          if type(filepath) == "string" and filepath:match("%.config$") then
+                              print("Found a .config file in added files: " .. filepath)
+                              return true -- Found a .config file, filter passes
+                          end
+                      end
+                  end
+
+                  -- Check modified files
+                  if commit.modified then
+                      for _, filepath in ipairs(commit.modified) do
+                          if type(filepath) == "string" and filepath:match("%.config$") then
+                              print("Found a .config file in modified files: " .. filepath)
+                              return true -- Found a .config file, filter passes
+                          end
+                      end
+                  end
+
+                  -- Check removed files
+                  if commit.removed then
+                      for _, filepath in ipairs(commit.removed) do
+                          if type(filepath) == "string" and filepath:match("%.config$") then
+                              print("Found a .config file in removed files: " .. filepath)
+                              return true -- Found a .config file, filter passes
+                          end
+                      end
+                  end
+              end
+            print("No commits found in the payload")
+            return false
+          end
   triggers:
     - template:
         name: argo-workflow-trigger
