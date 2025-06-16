@@ -22,9 +22,14 @@ spec:
       active: true
       contentType: json
       filters:
-        cel:
-          filter: |
-            exists(event.payload.head_commit.added,
-                   f, f.endsWith(".config") || f.endsWith(".tfvars")) ||
-            exists(event.payload.head_commit.modified,
-                   f, f.endsWith(".config") || f.endsWith(".tfvars"))
+        # Advanced script-based filtering
+        script: |
+          // For push events
+          if (data.commits) {
+            return data.commits.some(commit => 
+              (commit.added && commit.added.some(file => /\.config$/.test(file))) ||
+              (commit.modified && commit.modified.some(file => /\.config$/.test(file))) ||
+              (commit.removed && commit.removed.some(file => /\.config$/.test(file)))
+            );
+          }
+        
