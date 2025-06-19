@@ -1,0 +1,33 @@
+# .github/workflows/create-webhook.yml
+name: Create Argo Events Webhook
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create webhook for Argo Events
+        env:
+          GITHUB_TOKEN: ${{ secrets.WEBHOOK_CREATION_TOKEN }}
+          OWNER: dp-dev-test
+          REPO: experiments
+          ARGO_EVENTSOURCE_URL: http://48.216.137.213:12000/push
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$OWNER/$REPO/hooks \
+            -d '{
+              "name": "web",
+              "active": true,
+              "events": ["push"],
+              "config": {
+                "url": "'"$ARGO_EVENTSOURCE_URL"'",
+                "content_type": "json",
+                "secret": "'"$WEBHOOK_SECRET"'",
+                "insecure_ssl": "1"
+              }
+            }'
