@@ -19,9 +19,9 @@ spec:
                   -- Check added files
                   if commit.added then
                       for _, filepath in ipairs(commit.added) do
-                          if type(filepath) == "string" and filepath:match("%.config$") then
-                              print("Found a .config file in added files: " .. filepath)
-                              return true -- Found a .config file, filter passes
+                          if type(filepath) == "string" and filepath:match("%.tfvars$") then
+                              print("Found a .tfvars file in added files: " .. filepath)
+                              return true -- Found a .tfvars file, filter passes
                           end
                       end
                   end
@@ -29,9 +29,9 @@ spec:
                   -- Check modified files
                   if commit.modified then
                       for _, filepath in ipairs(commit.modified) do
-                          if type(filepath) == "string" and filepath:match("%.config$") then
-                              print("Found a .config file in modified files: " .. filepath)
-                              return true -- Found a .config file, filter passes
+                          if type(filepath) == "string" and filepath:match("%.tfvars$") then
+                              print("Found a .tfvars file in modified files: " .. filepath)
+                              return true -- Found a .tfvars file, filter passes
                           end
                       end
                   end
@@ -39,14 +39,14 @@ spec:
                   -- Check removed files
                   if commit.removed then
                       for _, filepath in ipairs(commit.removed) do
-                          if type(filepath) == "string" and filepath:match("%.config$") then
-                              print("Found a .config file in removed files: " .. filepath)
-                              return true -- Found a .config file, filter passes
+                          if type(filepath) == "string" and filepath:match("%.tfvars$") then
+                              print("Found a .tfvars file in removed files: " .. filepath)
+                              return true -- Found a .tfvars file, filter passes
                           end
                       end
                   end
               end
-            print("No config files changes found in the payload")
+            print("No tfvars files changes found in the payload")
             return false
           end
   triggers:
@@ -64,7 +64,7 @@ spec:
               metadata:
                 generateName: deployment-
               spec:
-                entrypoint: deploy-config-changes
+                entrypoint: deploy-tfvars-changes
                 arguments:
                   parameters:
                     - name: repository
@@ -72,9 +72,9 @@ spec:
                     - name: commit-id
                       value: ""
                 templates:
-                  - name: deploy-config-changes
+                  - name: deploy-tfvars-changes
                     steps:
-                      - - name: validate-config
+                      - - name: validate-tfvars
                           template: validate-repo-step
                       - - name: deploy-changes
                           template: deploy-step

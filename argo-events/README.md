@@ -77,7 +77,7 @@ https://github.com/dp-dev-test/experiments/settings/hooks/552050420?tab=deliveri
 ## References
 
 - [Argo Events Documentation](https://argoproj.github.io/argo-events/)
-
+- [Argo Events Quick start](https://argoproj.github.io/argo-events/quick_start/)
 ---
 
 **Note:**  
