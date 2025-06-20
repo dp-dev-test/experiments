@@ -68,7 +68,7 @@ https://github.com/dp-dev-test/experiments/settings/hooks/552050420?tab=deliveri
 
 ## Usage
 
-### Example: Trigger Workflow on `.config` File Update
+### Example: Trigger Workflow on `.tfvars` File Update
 
 1. Deploy the EventSource and Sensor YAMLs.
 2. Update sample `.tfvars` or `.config`  file.
