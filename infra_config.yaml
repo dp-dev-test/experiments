@@ -7,4 +7,4 @@ Applications:
     ENVIRONMENT: "np"
   # Non Prod
   - APPLICATION_NAME: "sample-app-marcos-prd"
-    ENVIRONMENT: "prd"
+    ENVIRONMENT: "prd1"
