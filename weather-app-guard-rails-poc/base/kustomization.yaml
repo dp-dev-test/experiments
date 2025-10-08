@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: weather-app-base
+
+resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+
+commonLabels:
+  app: weather-app
+  managed-by: kustomize
+
+commonAnnotations:
+  app.kubernetes.io/name: weather-app
+  app.kubernetes.io/component: backend
+  app.kubernetes.io/part-of: weather-system
+
+images:
+- name: nginx
+  newName: nginx
+  newTag: 1.21-alpine
+
+namePrefix: weather-
+
+namespace: weather-app
