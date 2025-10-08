@@ -2,9 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 metadata:
-  name: weather-app-prod
+  name: weather-app-guard-rails-poc-prod
 
-namespace: weather-app-prod
+namespace: weather-app-guard-rails-poc-prod
 
 resources:
 - ../../base
@@ -19,26 +19,26 @@ patchesJson6902:
     group: apps
     version: v1
     kind: Deployment
-    name: weather-app
+    name: weather-app-guard-rails-poc
   path: resource-limits-patch.yaml
 
 replicas:
-- name: weather-app
+- name: weather-app-guard-rails-poc
   count: 5
 
 images:
 - name: nginx
-  newName: myregistry.azurecr.io/weather-app
+  newName: myregistry.azurecr.io/weather-app-guard-rails-poc
   newTag: v1.2.3
 
 configMapGenerator:
-- name: weather-app-config-prod
+- name: weather-app-guard-rails-poc-config-prod
   files:
   - app.conf=configs/prod-app.conf
   - weather.json=configs/prod-weather.json
 
 secretGenerator:
-- name: weather-app-secrets-prod
+- name: weather-app-guard-rails-poc-secrets-prod
   literals:
   - api-key=prod-api-key-placeholder
 

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: weather-app-prod
+  name: weather-app-guard-rails-poc-prod
   labels:
-    name: weather-app-prod
+    name: weather-app-guard-rails-poc-prod
     environment: production
     managed-by: kustomize
   annotations:

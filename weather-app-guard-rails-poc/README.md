@@ -1,17 +1,25 @@
-# Weather App Deployment for AKS
+# Weather App Guard Rails PoC - Deployment for AKS
 
-This project contains Kubernetes manifests for deploying a weather application to Azure Kubernetes Service (AKS) using Kustomize.
+This project contains Kubernetes manifests for deploying a weather application guard rails proof-of-concept to Azure Kubernetes Service (AKS) using Kustomize.
 
 ## Structure
 
 ```
-weather-app/
+weather-app-guard-rails-poc/
 ├── base/                           # Base Kustomization resources
 │   ├── deployment.yaml            # Weather app deployment
 │   ├── service.yaml               # ClusterIP service
 │   ├── configmap.yaml             # Configuration
 │   └── kustomization.yaml         # Base kustomization
 └── overlays/
+    ├── dev/                       # Development overlay
+    │   ├── configs/               # Development-specific configs
+    │   │   ├── dev-app.conf      # Development nginx config
+    │   │   └── dev-weather.json  # Development app config
+    │   ├── deployment-patch.yaml  # Development deployment patches
+    │   ├── service-patch.yaml     # NodePort service patch
+    │   ├── namespace.yaml         # Development namespace
+    │   └── kustomization.yaml     # Development kustomization
     └── prod/                      # Production overlay
         ├── configs/               # Production-specific configs
         │   ├── prod-app.conf     # Production nginx config
@@ -26,13 +34,23 @@ weather-app/
 ## Features
 
 ### Base Configuration
-- Weather app deployment with 2 replicas
+- Weather app guard rails PoC deployment with 2 replicas
 - ClusterIP service on port 80
 - ConfigMap for application configuration
 - Health and readiness probes
 - Resource requests and limits
 - Security context and non-root user
 - AKS-specific node selectors and tolerations
+
+### Development Overlay
+- 1 replica for resource efficiency
+- NodePort service (port 30080) for easy access
+- Debug mode enabled with verbose logging
+- Mock data and test endpoints enabled
+- Guard rails PoC features enabled for testing
+- Relaxed security settings for development
+- Lower resource limits (200m CPU, 256Mi memory)
+- CORS enabled for local development
 
 ### Production Overlay
 - 5 replicas for high availability
@@ -64,13 +82,13 @@ weather-app/
 
 3. **Verify deployment:**
    ```bash
-   kubectl get pods -n weather-app-prod
-   kubectl get services -n weather-app-prod
+   kubectl get pods -n weather-app-guard-rails-poc-prod
+   kubectl get services -n weather-app-guard-rails-poc-prod
    ```
 
 4. **Check application logs:**
    ```bash
-   kubectl logs -l app=weather-app -n weather-app-prod
+   kubectl logs -l app=weather-app-guard-rails-poc -n weather-app-guard-rails-poc-prod
    ```
 
 ### Update Configuration

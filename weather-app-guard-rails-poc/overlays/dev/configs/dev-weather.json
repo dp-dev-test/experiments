@@ -1,0 +1,44 @@
+{
+  "project": "weather-app-guard-rails-poc",
+  "api": {
+    "timeout": 30000,
+    "retries": 1,
+    "rateLimit": {
+      "requests": 100,
+      "window": "1m"
+    },
+    "mockData": true
+  },
+  "cache": {
+    "ttl": 60,
+    "maxSize": "10MB",
+    "enabled": false
+  },
+  "logging": {
+    "level": "debug",
+    "format": "pretty",
+    "enableConsole": true
+  },
+  "monitoring": {
+    "enabled": true,
+    "endpoint": "/debug",
+    "verbose": true
+  },
+  "security": {
+    "cors": {
+      "enabled": true,
+      "origins": ["*"]
+    },
+    "strictMode": false
+  },
+  "development": {
+    "hotReload": true,
+    "debugMode": true,
+    "mockExternalServices": true,
+    "enableTestEndpoints": true,
+    "guardRailsPoC": {
+      "enabled": true,
+      "features": ["policy-validation", "security-scanning", "compliance-checks"]
+    }
+  }
+}
