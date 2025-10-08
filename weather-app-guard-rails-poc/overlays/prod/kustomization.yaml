@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: weather-app-prod
+
+namespace: weather-app-prod
+
+resources:
+- ../../base
+- namespace.yaml
+
+patchesStrategicMerge:
+- deployment-patch.yaml
+- service-patch.yaml
+
+patchesJson6902:
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: weather-app
+  path: resource-limits-patch.yaml
+
+replicas:
+- name: weather-app
+  count: 5
+
+images:
+- name: nginx
+  newName: myregistry.azurecr.io/weather-app
+  newTag: v1.2.3
+
+configMapGenerator:
+- name: weather-app-config-prod
+  files:
+  - app.conf=configs/prod-app.conf
+  - weather.json=configs/prod-weather.json
+
+secretGenerator:
+- name: weather-app-secrets-prod
+  literals:
+  - api-key=prod-api-key-placeholder
+
+commonLabels:
+  environment: production
+  tier: frontend
+
+commonAnnotations:
+  app.kubernetes.io/version: v1.2.3
+  deployment.kubernetes.io/revision: "3"

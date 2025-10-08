@@ -1,0 +1,28 @@
+{
+  "api": {
+    "timeout": 10000,
+    "retries": 5,
+    "rateLimit": {
+      "requests": 1000,
+      "window": "1h"
+    }
+  },
+  "cache": {
+    "ttl": 600,
+    "maxSize": "100MB"
+  },
+  "logging": {
+    "level": "info",
+    "format": "json"
+  },
+  "monitoring": {
+    "enabled": true,
+    "endpoint": "/metrics"
+  },
+  "security": {
+    "cors": {
+      "enabled": true,
+      "origins": ["https://weather.prod.example.com"]
+    }
+  }
+}
