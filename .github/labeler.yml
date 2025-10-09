@@ -1,0 +1,16 @@
+# Automatically label PRs based on changed files
+
+# Application Configuration Labels
+base-config:
+- '**/base/**'
+
+dev-environment:
+- '**/overlays/dev/**'
+
+prod-environment:
+- '**/overlays/prod/**'
+
+# Documentation
+documentation:
+- '**/*.md'
+- 'docs/**'

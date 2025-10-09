@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: weather-app-guard-rails-poc-dev
+  labels:
+    name: weather-app-guard-rails-poc-dev
+    environment: development
+    managed-by: kustomize
+  annotations:
+    scheduler.alpha.kubernetes.io/node-selector: "kubernetes.io/os=linux"

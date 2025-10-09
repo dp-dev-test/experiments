@@ -1,0 +1,18 @@
+# GitHub CODEOWNERS file for PR Guard Rails
+# This file defines required reviewers for different parts of the codebase
+
+# Global fallback - all files require review from platform team
+* @dp-dev-test/platform-team
+
+# Base Configuration Protection
+# Any changes to base configurations require production team approval
+**/base/ @dp-dev-test/production-team @dp-dev-test/platform-team
+
+# Production overlay changes require production team approval
+**/overlays/prod/ @dp-dev-test/production-team
+
+# GitHub Actions workflows require platform team approval
+.github/workflows/ @dp-dev-test/platform-team
+
+# CODEOWNERS changes require platform team approval
+.github/CODEOWNERS @dp-dev-test/platform-team

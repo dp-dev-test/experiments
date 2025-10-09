@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: weather-app
+  name: weather-app-guard-rails-poc
   labels:
-    app: weather-app
+    app: weather-app-guard-rails-poc
     version: v1.0.0
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: weather-app
+      app: weather-app-guard-rails-poc
   template:
     metadata:
       labels:
-        app: weather-app
+        app: weather-app-guard-rails-poc
         version: v1.0.0
     spec:
       containers:
-      - name: weather-app
-        image: nginx:1.21-alpine  # Replace with your actual weather app image
+      - name: weather-app-guard-rails-poc
+        image: nginx:1.21-alpine  # Replace with your actual weather app image..
         ports:
         - containerPort: 8080
           name: http

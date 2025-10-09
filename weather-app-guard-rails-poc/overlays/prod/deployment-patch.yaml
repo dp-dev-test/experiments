@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: weather-app
+  name: weather-app-guard-rails-poc
 spec:
   template:
     spec:
       containers:
-      - name: weather-app
+      - name: weather-app-guard-rails-poc
         env:
         - name: NODE_ENV
           value: "production"
