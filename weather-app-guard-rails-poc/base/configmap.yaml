@@ -31,6 +31,6 @@ data:
         "retries": 3
       },
       "cache": {
-        "ttl": 300
+        "ttl": 301
       }
     }
