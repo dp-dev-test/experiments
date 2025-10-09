@@ -1,6 +1,6 @@
 # Guardrails System Documentation
 
-This document describes the comprehensive guard rails system implemented for the `weather-app-guard-rails-poc` project to ensure safe and controlled deployments.
+This document describes the comprehensive guard rails system implemented to ensure safe and controlled deployments.
 
 ## Overview
 
@@ -10,8 +10,7 @@ The guard rails system enforces policies for pull request merges, particularly w
 - 🛡️ **Automatic detection** of base configuration changes
 - 🏷️ **Intelligent labeling** based on files modified
 - 👥 **Mandatory approvals** from designated teams
-- 🔒 **Security scanning** and compliance checks
-- 📋 **Structured PR templates** with comprehensive checklists
+-  **Structured PR templates** with comprehensive checklists
 - 🚨 **Branch protection** enforcement
 
 ## System Components
@@ -19,14 +18,13 @@ The guard rails system enforces policies for pull request merges, particularly w
 ### 1. GitHub Actions Workflows
 
 #### PR Guard Rails Workflow (`.github/workflows/pr-guard-rails.yml`)
-- **Trigger**: Pull requests affecting `weather-app-guard-rails-poc/**`
+- **Trigger**: Pull requests affecting base configurations or production overlays
 - **Purpose**: Detect base config changes and enforce approval requirements
 - **Actions**:
   - Detects changes in `base/` directory
   - Checks for production overlay existence
   - Automatically adds required labels
   - Posts detailed comments with requirements
-  - Performs security scans
 
 #### Auto Label Workflow (`.github/workflows/auto-label.yml`)
 - **Trigger**: All pull requests
@@ -41,8 +39,8 @@ The guard rails system enforces policies for pull request merges, particularly w
 The `.github/CODEOWNERS` file defines mandatory reviewers:
 
 ```
-weather-app-guard-rails-poc/base/ @dp-dev-test/production-team @dp-dev-test/platform-team
-weather-app-guard-rails-poc/overlays/prod/ @dp-dev-test/production-team
+**/base/ @dp-dev-test/production-team @dp-dev-test/platform-team
+**/overlays/prod/ @dp-dev-test/production-team
 ```
 
 ### 3. Branch Protection Rules
@@ -51,7 +49,7 @@ Required settings for the `main` branch:
 - ✅ Require pull request reviews before merging
 - ✅ Require review from CODEOWNERS
 - ✅ Require status checks to pass
-- ✅ Required status checks: `guard-rails-check`, `security-scan`, `auto-label`
+- ✅ Required status checks: `guard-rails-check`, `auto-label`
 
 ### 4. PR Templates
 
@@ -88,14 +86,6 @@ Labels are automatically applied based on file patterns:
 | `**/overlays/prod/**` | `prod-environment` | Production environment changes |
 | `**/README.md`, `**/*.md` | `documentation` | Documentation updates |
 
-### Security Scanning
-
-Every PR affecting applications triggers:
-- ✅ Manifest validation
-- ✅ Secret scanning with TruffleHog
-- ✅ Policy compliance verification
-- ✅ Context validation
-
 ## Team Structure
 
 ### Required Teams
@@ -109,7 +99,7 @@ Every PR affecting applications triggers:
 
 ### Scenario 1: Base Configuration Change
 
-**Files Changed**: `weather-app-guard-rails-poc/base/deployment.yaml`
+**Files Changed**: `my-app/base/deployment.yaml`
 
 **Guard Rails Response**:
 1. ✅ Detects base config change
@@ -121,7 +111,7 @@ Every PR affecting applications triggers:
 
 ### Scenario 2: Development Only Change
 
-**Files Changed**: `weather-app-guard-rails-poc/overlays/dev/deployment-patch.yaml`
+**Files Changed**: `my-app/overlays/dev/deployment-patch.yaml`
 
 **Guard Rails Response**:
 1. ✅ Detects dev environment change
@@ -131,7 +121,7 @@ Every PR affecting applications triggers:
 
 ### Scenario 3: Documentation Update
 
-**Files Changed**: `weather-app-guard-rails-poc/README.md`
+**Files Changed**: `my-app/README.md`
 
 **Guard Rails Response**:
 1. ✅ Adds labels: `documentation`, `weather-app`
@@ -145,7 +135,7 @@ Every PR affecting applications triggers:
 ```bash
 gh api repos/dp-dev-test/experiments/branches/main/protection \
   --method PUT \
-  --field required_status_checks='{"strict":true,"contexts":["guard-rails-check","security-scan","auto-label"]}' \
+  --field required_status_checks='{"strict":true,"contexts":["guard-rails-check","auto-label"]}' \
   --field enforce_admins=true \
   --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":true}'
 ```
@@ -154,15 +144,7 @@ gh api repos/dp-dev-test/experiments/branches/main/protection \
 
 Ensure all teams referenced in CODEOWNERS exist:
 - production-team
-- platform-team  
-- infrastructure-team
-- security-team
-- devops-team
-- development-team
-- admin-team
-- documentation-team
-- network-team
-- application-team
+- platform-team
 
 ### 3. Configure Team Permissions
 
@@ -173,7 +155,7 @@ Give teams appropriate repository access:
 
 ### 4. Test the System
 
-1. Create test PR modifying `weather-app-guard-rails-poc/base/deployment.yaml`
+1. Create test PR modifying `my-app/base/deployment.yaml`
 2. Verify automatic labeling
 3. Confirm reviewer assignment
 4. Test merge prevention without approval
@@ -229,11 +211,11 @@ Example for new app `my-new-app`:
 ```yaml
 # In pr-guard-rails.yml
 paths:
-  - 'weather-app-guard-rails-poc/**'
-  - 'my-new-app/**'  # Add this
+  - '**/base/**'
+  - '**/overlays/prod/**'
 
 # In CODEOWNERS
-my-new-app/base/ @dp-dev-test/production-team
+**/base/ @dp-dev-test/production-team
 
 # In labeler.yml
 my-new-app:

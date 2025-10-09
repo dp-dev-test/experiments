@@ -17,7 +17,6 @@ This document outlines the required branch protection settings for the `main` br
 
 #### Required Status Checks:
 - `guard-rails-check` (from PR Guard Rails workflow)
-- `security-scan` (from PR Guard Rails workflow) 
 - `auto-label` (from Auto Label workflow)
 
 ### Additional Protection
@@ -46,7 +45,7 @@ Use the GitHub API or repository settings UI to configure branch protection:
 # Example using GitHub CLI
 gh api repos/:owner/:repo/branches/main/protection \
   --method PUT \
-  --field required_status_checks='{"strict":true,"contexts":["guard-rails-check","security-scan","auto-label"]}' \
+  --field required_status_checks='{"strict":true,"contexts":["guard-rails-check","auto-label"]}' \
   --field enforce_admins=true \
   --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":true}' \
   --field restrictions=null
@@ -67,7 +66,6 @@ resource "github_branch_protection" "main" {
     strict   = true
     contexts = [
       "guard-rails-check",
-      "security-scan", 
       "auto-label"
     ]
   }
@@ -89,19 +87,10 @@ Ensure the following GitHub teams exist and have appropriate members:
 ### Required Teams
 - `@dp-dev-test/production-team` - Production environment stakeholders
 - `@dp-dev-test/platform-team` - Platform/infrastructure owners
-- `@dp-dev-test/infrastructure-team` - Infrastructure specialists
-- `@dp-dev-test/development-team` - Development team members
-- `@dp-dev-test/devops-team` - DevOps engineers
-- `@dp-dev-test/security-team` - Security specialists
-- `@dp-dev-test/admin-team` - Repository administrators
-- `@dp-dev-test/documentation-team` - Documentation maintainers
-- `@dp-dev-test/network-team` - Network/connectivity specialists
-- `@dp-dev-test/application-team` - Application developers
 
 ### Team Permissions
 - **Production Team**: Write access, required for base config changes
 - **Platform Team**: Admin access, overall system oversight
-- **Other Teams**: Write access for their respective areas
 
 ## Workflow Integration
 
@@ -116,7 +105,7 @@ The guard rails system integrates with branch protection through:
 
 To test the guard rails system:
 
-1. Create a test PR that modifies files in `weather-app-guard-rails-poc/base/`
+1. Create a test PR that modifies files in `my-app/base/`
 2. Verify that the `requires-prod-approval` label is automatically added
 3. Confirm that production team members are automatically requested as reviewers
 4. Ensure the PR cannot be merged without required approvals

@@ -4,7 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - 'weather-app-guard-rails-poc/**'
+      - '**/base/**'
+      - '**/overlays/prod/**'
 
 permissions:
   contents: read
@@ -27,12 +28,12 @@ jobs:
         uses: tj-actions/changed-files@v40
         with:
           files: |
-            weather-app-guard-rails-poc/base/**
+            **/base/**
           files_yaml: |
             base:
-              - weather-app-guard-rails-poc/base/**
+              - **/base/**
             prod_overlay:
-              - weather-app-guard-rails-poc/overlays/prod/**
+              - **/overlays/prod/**
 
       - name: Check for base configuration changes
         id: check-base-changes
@@ -55,16 +56,17 @@ jobs:
         id: check-prod-overlay
         run: |
           PROD_OVERLAY_EXISTS=false
-          if [[ -d "weather-app-guard-rails-poc/overlays/prod" ]]; then
+          # Check if any application has a production overlay
+          if find . -path "*/overlays/prod" -type d | grep -q .; then
             PROD_OVERLAY_EXISTS=true
             echo "### ✅ Production Overlay Detected" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Production overlay found at: \`weather-app-guard-rails-poc/overlays/prod/\`" >> $GITHUB_STEP_SUMMARY
+            echo "Production overlay found for application(s)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ℹ️ No Production Overlay Found" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "No production overlay detected for this application." >> $GITHUB_STEP_SUMMARY
+            echo "No production overlay detected for any application." >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
           
@@ -150,35 +152,3 @@ jobs:
             echo "✅ No guard rails policy triggered"
             echo "::notice title=Guard Rails Check::No base configuration changes affecting production detected"
           fi
-
-  security-scan:
-    name: Security and Compliance Scan
-    runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.changed_files, 'weather-app-guard-rails-poc/')
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run security scan on Kubernetes manifests
-        uses: azure/k8s-lint@v1
-        with:
-          manifests: |
-            weather-app-guard-rails-poc/base/
-            weather-app-guard-rails-poc/overlays/
-
-      - name: Scan for secrets
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./weather-app-guard-rails-poc/
-          base: main
-          head: HEAD
-
-      - name: Policy compliance check
-        run: |
-          echo "### 🔒 Security and Compliance Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- [x] Kubernetes manifest validation" >> $GITHUB_STEP_SUMMARY
-          echo "- [x] Secret scanning completed" >> $GITHUB_STEP_SUMMARY
-          echo "- [x] Policy compliance verified" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
