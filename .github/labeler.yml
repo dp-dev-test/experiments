@@ -10,14 +10,49 @@ dev-environment:
 prod-environment:
 - '**/overlays/prod/**'
 
+kubernetes:
+- '**/*.yaml'
+- '**/*.yml'
+
+kustomize:
+- '**/kustomization.yaml'
+
+# Infrastructure
+deployment:
+- '**/*deployment*.yaml'
+- '**/*deployment*.yml'
+
+service:
+- '**/*service*.yaml'
+- '**/*service*.yml'
+
+configuration:
+- '**/*config*.yaml'
+- '**/*config*.yml'
+
 # CI/CD
 github-actions:
-- .github/workflows/**
+- '.github/workflows/**'
 
 ci-cd:
-- .github/**
+- '.github/**'
 
 # Documentation
 documentation:
 - '**/*.md'
-- docs/**
+- 'docs/**'
+
+# Argo Events
+argo-events:
+- 'argo-events/**'
+
+argo-workflows:
+- 'argo-workflows/**'
+- 'argo-workflow-setup/**'
+
+# Security
+security:
+- '**/*secret*.yaml'
+- '**/*secret*.yml'
+- '**/*rbac*.yaml'
+- '**/*rbac*.yml'
