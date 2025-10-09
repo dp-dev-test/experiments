@@ -44,7 +44,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "The following base configuration files were modified:" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            for file in ${{ steps.changed-files.outputs.base_all_changed_files }}; do
+            echo "${{ steps.changed-files.outputs.base_all_changed_files }}" | tr ' ' '\n' | while read file; do
               echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
             done
             echo "" >> $GITHUB_STEP_SUMMARY
