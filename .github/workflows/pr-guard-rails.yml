@@ -3,9 +3,6 @@ name: PR Guard Rails - Base Configuration Protection
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - '**/base/**'
-      - '**/overlays/prod/**'
 
 permissions:
   contents: read
@@ -44,7 +41,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "The following base configuration files were modified:" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            for file in ${{ steps.changed-files.outputs.base_all_changed_files }}; do
+            echo "${{ steps.changed-files.outputs.base_all_changed_files }}" | tr ' ' '\n' | while read file; do
               echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
             done
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -129,7 +126,6 @@ jobs:
             Please request review from:
             - Production team members (see CODEOWNERS)
             - Platform/Infrastructure team
-            - Application owners
             
             ---
             *This check was automatically performed by the Guard Rails system.*`;
@@ -149,4 +145,6 @@ jobs:
           else
             echo "✅ No guard rails policy triggered"
             echo "::notice title=Guard Rails Check::No base configuration changes affecting production detected"
+            # Ensure workflow completes successfully even when no guard rails are needed
+            exit 0
           fi
