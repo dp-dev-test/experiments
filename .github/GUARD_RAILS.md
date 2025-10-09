@@ -32,7 +32,7 @@ The guard rails system enforces policies for pull request merges, particularly w
 - **Trigger**: All pull requests
 - **Purpose**: Automatically label PRs based on changed files
 - **Actions**:
-  - Adds contextual labels (weather-app, kubernetes, etc.)
+  - Adds contextual labels based on file patterns
   - Adds size labels based on PR complexity
   - Routes to appropriate teams
 
@@ -83,19 +83,18 @@ Labels are automatically applied based on file patterns:
 
 | Pattern | Label | Purpose |
 |---------|-------|---------|
-| `weather-app-guard-rails-poc/**` | `weather-app` | Identifies weather app changes |
 | `**/base/**` | `base-config` | Flags base configuration changes |
+| `**/overlays/dev/**` | `dev-environment` | Development environment changes |
 | `**/overlays/prod/**` | `prod-environment` | Production environment changes |
-| `**/*.yaml` | `kubernetes` | Kubernetes manifest changes |
-| `.github/workflows/**` | `github-actions` | CI/CD changes |
+| `**/README.md`, `**/*.md` | `documentation` | Documentation updates |
 
 ### Security Scanning
 
-Every PR affecting the weather app triggers:
-- ✅ Kubernetes manifest validation
+Every PR affecting applications triggers:
+- ✅ Manifest validation
 - ✅ Secret scanning with TruffleHog
 - ✅ Policy compliance verification
-- ✅ Security context validation
+- ✅ Context validation
 
 ## Team Structure
 
@@ -105,9 +104,6 @@ Every PR affecting the weather app triggers:
 |------|----------------|--------------|
 | `@dp-dev-test/production-team` | Production oversight | Base configs, prod overlays |
 | `@dp-dev-test/platform-team` | Platform governance | All changes (fallback) |
-| `@dp-dev-test/infrastructure-team` | Infrastructure | Kubernetes manifests |
-| `@dp-dev-test/security-team` | Security compliance | Security-related files |
-| `@dp-dev-test/devops-team` | CI/CD | GitHub Actions workflows |
 
 ## Usage Examples
 

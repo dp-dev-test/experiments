@@ -48,27 +48,17 @@ jobs:
             for (const file of files) {
               const path = file.filename;
               
-              // Weather app specific labels
-              if (path.startsWith('weather-app-guard-rails-poc/')) {
-                labels.add('weather-app');
-                
-                if (path.includes('/base/')) {
-                  labels.add('base-config');
-                }
-                
-                if (path.includes('/overlays/dev/')) {
-                  labels.add('dev-environment');
-                }
-                
-                if (path.includes('/overlays/prod/')) {
-                  labels.add('prod-environment');
-                }
+              // Application configuration labels
+              if (path.includes('/base/')) {
+                labels.add('base-config');
               }
               
-              // GitHub workflows
-              if (path.startsWith('.github/workflows/')) {
-                labels.add('github-actions');
-                labels.add('ci-cd');
+              if (path.includes('/overlays/dev/')) {
+                labels.add('dev-environment');
+              }
+              
+              if (path.includes('/overlays/prod/')) {
+                labels.add('prod-environment');
               }
               
               // Documentation
