@@ -2,38 +2,22 @@
 
 # Application Configuration Labels
 base-config:
-  - '**/base/**'
+- '**/base/**'
 
 dev-environment:
-  - '**/overlays/dev/**'
+- '**/overlays/dev/**'
 
 prod-environment:
-  - '**/overlays/prod/**'
-
-kustomize:
-  - '**/kustomization.yaml'
-
-# Infrastructure
-deployment:
-  - '**/*deployment*.yaml'
-  - '**/*deployment*.yml'
-
-service:
-  - '**/*service*.yaml'
-  - '**/*service*.yml'
-
-configuration:
-  - '**/*config*.yaml'
-  - '**/*config*.yml'
+- '**/overlays/prod/**'
 
 # CI/CD
 github-actions:
-  - .github/workflows/**
+- .github/workflows/**
 
 ci-cd:
-  - .github/**
+- .github/**
 
 # Documentation
 documentation:
-  - '**/*.md'
-  - docs/**
+- '**/*.md'
+- docs/**
