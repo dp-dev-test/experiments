@@ -3,9 +3,6 @@ name: PR Guard Rails - Base Configuration Protection
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - '**/base/**'
-      - '**/overlays/prod/**'
 
 permissions:
   contents: read
@@ -148,4 +145,6 @@ jobs:
           else
             echo "✅ No guard rails policy triggered"
             echo "::notice title=Guard Rails Check::No base configuration changes affecting production detected"
+            # Ensure workflow completes successfully even when no guard rails are needed
+            exit 0
           fi
