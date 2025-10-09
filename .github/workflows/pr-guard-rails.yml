@@ -129,7 +129,6 @@ jobs:
             Please request review from:
             - Production team members (see CODEOWNERS)
             - Platform/Infrastructure team
-            - Application owners
             
             ---
             *This check was automatically performed by the Guard Rails system.*`;
