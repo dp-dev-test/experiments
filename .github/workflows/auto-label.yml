@@ -1,0 +1,88 @@
+name: Auto Label PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-label:
+    name: Automatically Label Pull Requests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Label based on changed files
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: .github/labeler.yml
+
+      - name: Add size labels
+        uses: codelytv/pr-size-labeler@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: 'size/xs'
+          s_label: 'size/s'
+          m_label: 'size/m'
+          l_label: 'size/l'
+          xl_label: 'size/xl'
+          message_if_xl: 'This PR is very large. Consider breaking it into smaller PRs.'
+
+      - name: Label weather app changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const labels = new Set();
+            
+            for (const file of files) {
+              const path = file.filename;
+              
+              // Weather app specific labels
+              if (path.startsWith('weather-app-guard-rails-poc/')) {
+                labels.add('weather-app');
+                
+                if (path.includes('/base/')) {
+                  labels.add('base-config');
+                }
+                
+                if (path.includes('/overlays/dev/')) {
+                  labels.add('dev-environment');
+                }
+                
+                if (path.includes('/overlays/prod/')) {
+                  labels.add('prod-environment');
+                }
+              }
+              
+              // GitHub workflows
+              if (path.startsWith('.github/workflows/')) {
+                labels.add('github-actions');
+                labels.add('ci-cd');
+              }
+              
+              // Documentation
+              if (path.endsWith('.md')) {
+                labels.add('documentation');
+              }
+            }
+
+            if (labels.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: Array.from(labels)
+              });
+            }

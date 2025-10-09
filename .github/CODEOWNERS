@@ -1,0 +1,60 @@
+# GitHub CODEOWNERS file for PR Guard Rails
+# This file defines required reviewers for different parts of the codebase
+
+# Global fallback - all files require review from platform team
+* @dp-dev-test/platform-team
+
+# Weather App Guard Rails PoC - Base Configuration Protection
+# Any changes to base configurations require production team approval
+weather-app-guard-rails-poc/base/ @dp-dev-test/production-team @dp-dev-test/platform-team
+
+# Production overlay changes require production team approval
+weather-app-guard-rails-poc/overlays/prod/ @dp-dev-test/production-team
+
+# Development overlay changes require development team approval
+weather-app-guard-rails-poc/overlays/dev/ @dp-dev-test/development-team
+
+# Kubernetes manifests require infrastructure team review
+*.yaml @dp-dev-test/infrastructure-team
+*.yml @dp-dev-test/infrastructure-team
+
+# Kustomization files require special attention
+**/kustomization.yaml @dp-dev-test/production-team @dp-dev-test/infrastructure-team
+
+# GitHub Actions workflows require DevOps team approval
+.github/workflows/ @dp-dev-test/devops-team @dp-dev-test/platform-team
+
+# CODEOWNERS changes require admin approval
+.github/CODEOWNERS @dp-dev-test/admin-team
+
+# Argo Events configurations require infrastructure team
+argo-events/ @dp-dev-test/infrastructure-team @dp-dev-test/platform-team
+argo-workflows/ @dp-dev-test/infrastructure-team @dp-dev-test/platform-team
+argo-workflow-setup/ @dp-dev-test/infrastructure-team @dp-dev-test/platform-team
+
+# Documentation changes require minimal approval
+*.md @dp-dev-test/documentation-team
+
+# Security-related files require security team approval
+**/*secret*.yaml @dp-dev-test/security-team @dp-dev-test/production-team
+**/*rbac*.yaml @dp-dev-test/security-team @dp-dev-test/infrastructure-team
+**/*role*.yaml @dp-dev-test/security-team @dp-dev-test/infrastructure-team
+
+# Configuration files with potential security impact
+**/*config*.yaml @dp-dev-test/security-team
+**/namespace.yaml @dp-dev-test/infrastructure-team @dp-dev-test/production-team
+
+# Deployment files require careful review
+**/*deployment*.yaml @dp-dev-test/production-team @dp-dev-test/infrastructure-team
+
+# Service definitions require network team approval
+**/*service*.yaml @dp-dev-test/network-team @dp-dev-test/infrastructure-team
+
+# Resource patches require production approval (high impact)
+**/resource-*-patch.yaml @dp-dev-test/production-team @dp-dev-test/infrastructure-team
+
+# Application configuration overrides
+**/configs/ @dp-dev-test/application-team
+
+# Infrastructure configuration
+infra_config.yaml @dp-dev-test/infrastructure-team @dp-dev-test/platform-team

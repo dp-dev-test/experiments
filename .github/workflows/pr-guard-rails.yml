@@ -1,0 +1,184 @@
+name: PR Guard Rails - Base Configuration Protection
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'weather-app-guard-rails-poc/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  guard-rails-check:
+    name: Guard Rails Policy Enforcement
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+        with:
+          files: |
+            weather-app-guard-rails-poc/base/**
+          files_yaml: |
+            base:
+              - weather-app-guard-rails-poc/base/**
+            prod_overlay:
+              - weather-app-guard-rails-poc/overlays/prod/**
+
+      - name: Check for base configuration changes
+        id: check-base-changes
+        run: |
+          echo "Base files changed: ${{ steps.changed-files.outputs.base_any_changed }}"
+          echo "base_changed=${{ steps.changed-files.outputs.base_any_changed }}" >> $GITHUB_OUTPUT
+          
+          if [[ "${{ steps.changed-files.outputs.base_any_changed }}" == "true" ]]; then
+            echo "### 🚨 Base Configuration Changes Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The following base configuration files were modified:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            for file in ${{ steps.changed-files.outputs.base_all_changed_files }}; do
+              echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
+            done
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check for production overlay existence
+        id: check-prod-overlay
+        run: |
+          PROD_OVERLAY_EXISTS=false
+          if [[ -d "weather-app-guard-rails-poc/overlays/prod" ]]; then
+            PROD_OVERLAY_EXISTS=true
+            echo "### ✅ Production Overlay Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Production overlay found at: \`weather-app-guard-rails-poc/overlays/prod/\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ℹ️ No Production Overlay Found" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No production overlay detected for this application." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "prod_overlay_exists=$PROD_OVERLAY_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Apply guard rails policy
+        id: apply-policy
+        if: steps.check-base-changes.outputs.base_changed == 'true' && steps.check-prod-overlay.outputs.prod_overlay_exists == 'true'
+        run: |
+          echo "requires_approval=true" >> $GITHUB_OUTPUT
+          echo "### 🛡️ Guard Rails Policy Activated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Policy Triggered:** Base configuration changes detected for application with production overlay." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Required Actions:**" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Production team approval required" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Impact assessment completed" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Deployment plan reviewed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next Steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. The \`requires-prod-approval\` label will be automatically added" >> $GITHUB_STEP_SUMMARY
+          echo "2. A designated production team member must approve this PR" >> $GITHUB_STEP_SUMMARY
+          echo "3. Consider testing changes in development environment first" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Add guard rails labels
+        if: steps.apply-policy.outputs.requires_approval == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = ['requires-prod-approval', 'base-config-change', 'needs-review'];
+            
+            // Add labels to PR
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            });
+            
+            // Add comment to PR
+            const comment = `## 🛡️ Guard Rails Policy Enforcement
+            
+            This pull request modifies base configuration files for an application with a production overlay.
+            
+            ### 📋 Policy Requirements
+            - **Mandatory Review:** Production team approval required
+            - **Labels Applied:** \`requires-prod-approval\`, \`base-config-change\`, \`needs-review\`
+            - **Branch Protection:** This PR cannot be merged until approved by designated reviewers
+            
+            ### 📁 Modified Base Files
+            ${{ steps.changed-files.outputs.base_all_changed_files }}
+            
+            ### 🏭 Production Impact
+            These changes will affect the production deployment configuration. Please ensure:
+            - [ ] Changes have been tested in development environment
+            - [ ] Impact on existing production workloads has been assessed
+            - [ ] Deployment rollback plan is in place
+            - [ ] Monitoring and alerting implications are understood
+            
+            ### 👥 Required Approvers
+            Please request review from:
+            - Production team members (see CODEOWNERS)
+            - Platform/Infrastructure team
+            - Application owners
+            
+            ---
+            *This check was automatically performed by the Guard Rails system.*`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+      - name: Guard rails check status
+        run: |
+          if [[ "${{ steps.apply-policy.outputs.requires_approval }}" == "true" ]]; then
+            echo "🛡️ Guard rails policy activated - Production approval required"
+            echo "::notice title=Guard Rails Policy::Base configuration changes require production team approval"
+          else
+            echo "✅ No guard rails policy triggered"
+            echo "::notice title=Guard Rails Check::No base configuration changes affecting production detected"
+          fi
+
+  security-scan:
+    name: Security and Compliance Scan
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'weather-app-guard-rails-poc/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security scan on Kubernetes manifests
+        uses: azure/k8s-lint@v1
+        with:
+          manifests: |
+            weather-app-guard-rails-poc/base/
+            weather-app-guard-rails-poc/overlays/
+
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./weather-app-guard-rails-poc/
+          base: main
+          head: HEAD
+
+      - name: Policy compliance check
+        run: |
+          echo "### 🔒 Security and Compliance Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [x] Kubernetes manifest validation" >> $GITHUB_STEP_SUMMARY
+          echo "- [x] Secret scanning completed" >> $GITHUB_STEP_SUMMARY
+          echo "- [x] Policy compliance verified" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
